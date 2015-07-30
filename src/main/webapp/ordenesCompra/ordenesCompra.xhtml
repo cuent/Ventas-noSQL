@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="../WEB-INF/templates/template.xhtml">
+        <ui:define name="content">
+            <h:form>
+                <p:messages autoUpdate="true" />
+
+                <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+
+                    <p:selectOneMenu value="#{ordenesCompraController.cantidadVisualizacion}" editable="true">
+                        <f:selectItem itemLabel="1" itemValue="1" />
+                        <f:selectItem itemLabel="10" itemValue="10" />
+                        <f:selectItem itemLabel="100" itemValue="100" />
+                        <f:selectItem itemLabel="1000" itemValue="1000" />
+
+                    </p:selectOneMenu>
+
+                    <p:commandButton value="Visualizar" actionListener="#{ordenesCompraController.cargarProductos()}" update="listaProducto"/>
+
+
+                    <p:dataTable id="listaProducto" var="producto" value="#{ordenesCompraController.productos}" widgetVar="carsTable"
+                                 emptyMessage="No cars found with given criteria" filteredValue="#{ordenesCompraController.productos}"
+                                 paginator="true"
+                                 rows="14"
+                                 selection="#{ordenesCompraController.productoSeleccionado}"
+                                 selectionMode="single"
+                                 rowKey="#{producto.id}"
+
+                                 >
+
+
+                        <p:column filterBy="#{producto.id}" headerText="ASIN" footerText="ASIN" filterMatchMode="startsWith">
+                            <h:outputText value="#{producto.id}" />
+                        </p:column>
+                        <p:column filterBy="#{producto.title}" headerText="Titulo" footerText="Titulo" filterMatchMode="startsWith">
+                            <h:outputText value="#{producto.title}" />
+                        </p:column>
+                        <p:column filterBy="#{producto.group}" headerText="Grupo" footerText="Grupo" filterMatchMode="startsWith">
+                            <h:outputText value="#{producto.group}" />
+                        </p:column>
+                        <p:column  headerText="Comprar" footerText="Comprar">
+                            <p:commandButton value="Añadir a carrito" action="#{ordenesCompraController.anadirACarrito(producto.id)}"></p:commandButton>
+                        </p:column>
+
+                    </p:dataTable>
+                </h:panelGrid>
+
+                <p:commandButton value="Informe" actionListener="#{itemByUser.listar}" icon="ui-icon-check" />
+            </h:form>        
+        </ui:define>
+    </ui:composition>
+</html>
