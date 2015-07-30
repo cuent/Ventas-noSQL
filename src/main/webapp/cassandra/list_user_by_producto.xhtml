@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="../WEB-INF/templates/template.xhtml">
+        <ui:define name="content">
+            <p:panel>
+                <h2 style="margin-top:0"><b>Producto (ID):</b> #{userByItem.producto}</h2>
+                <h3 style="margin-top:0"><b>Núm. Usuarios:</b> #{userByItem.datos.size()}</h3>
+                <h:form id="formlistaProductos">
+                    <p:growl id="msgs" showDetail="true"/>
+                    <p:dataTable id="datalistProductos"  value="#{userByItem.datos}"
+                                 var="item"
+                                 rowKey="#{item.asin}"
+                                 style="width: 100%; font-size: 0.9em;"
+                                 editable="true"
+                                 selection="#{userByItem.itemUser}"
+                                 paginatorPosition="bottom"
+                                 paginator="true"
+                                 rows="25">
+                        <f:facet name="header">Lista de Productos</f:facet>
+
+                        <p:column headerText="ID Usuario" sortBy="#{item.cutomer}" filterBy="#{item.cutomer}">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{item.cutomer}" /></f:facet>
+                                <f:facet name="input"><p:inputText id="Input1" value="#{item.cutomer}" style="width:100%"/></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                        <p:column headerText="Usuario" sortBy="#{item.name}" filterBy="#{item.name}">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{item.name}" /></f:facet>
+                                <f:facet name="input"><p:inputText id="Input2" value="#{item.name}" style="width:100%"/></f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                    </p:dataTable>
+                    <p:commandButton value="Regresar" actionListener="#{userByItem.regresarPagina}" icon="ui-icon-check" />
+                </h:form>
+            </p:panel>
+        </ui:define>
+    </ui:composition>
+</html>

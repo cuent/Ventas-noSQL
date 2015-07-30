@@ -11,21 +11,27 @@ import com.datastax.driver.core.Metadata;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author cuent
  */
-public class ItemByUserFacade {
+public class ItemUserFacade {
 
     private Session session;
     private Cluster cluster;
+
+    public ItemUserFacade() {
+        connect("192.168.0.12");
+    }
 
     public Session getSession() {
         return this.session;
     }
 
-    public void connect(String node) {
+    private void connect(String node) {
         cluster = Cluster.builder()
                 .addContactPoint(node)
                 .build();
@@ -39,26 +45,28 @@ public class ItemByUserFacade {
         session = cluster.connect("user_product");
     }
 
-    public void queryGetUserByItem(String asin) {
+    public List<ItemUser> queryGetUserByItem(String asin) {
         String query = String.format("SELECT * FROM user_product.user_by_item where asin='%s';", asin);
         ResultSet results = session.execute(query);
+        List<ItemUser> listItemUser = new ArrayList<>();
 
         for (Row row : results) {
-            System.out.println(String.format("%-30s\t%-20s\t%-20s", row.getString("title"),
-                    row.getString("album"), row.getString("artist")));
+            Double d = row.getDouble("cutomer");
+            listItemUser.add(new ItemUser(d.intValue(), row.getString("asin"), "", row.getString("name")));
         }
-        System.out.println();
+        return listItemUser;
     }
 
-    public void queryGetItemByUser(String cutomer) {
-        String query = String.format("SELECT * from user_product.item_by_user WHERE cutomer=%s;",cutomer);
+    public List<ItemUser> queryGetItemByUser(String cutomer) {
+        String query = String.format("SELECT * from user_product.item_by_user WHERE cutomer=%s;", cutomer);
         ResultSet results = session.execute(query);
+        List<ItemUser> listItemUser = new ArrayList<>();
 
         for (Row row : results) {
-            System.out.println(String.format("%-30s\t%-20s\t%-20s", row.getString("title"),
-                    row.getString("album"), row.getString("artist")));
+            Double d = row.getDouble("cutomer");
+            listItemUser.add(new ItemUser(d.intValue(), row.getString("asin"), row.getString("title"), ""));
         }
-        System.out.println();
+        return listItemUser;
     }
 
     public void loadUserByProduct(String asin, int cutomer, String name) {

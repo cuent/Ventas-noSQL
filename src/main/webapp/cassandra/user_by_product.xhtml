@@ -3,14 +3,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <ui:composition template="../WEB-INF/templates/template.xhtml">
         <ui:define name="content">
-            <br />
-            <p:panel header="Usuairios por Producto">
-                <p><h:outputText value="Hola"></h:outputText></p>
-                <h:link outcome="welcomePrimefaces" value="Primefaces welcome page" />
-            </p:panel>
+            <h:form>
+                <p:messages autoUpdate="true" />
+                <h2 style="margin-top:0"><b>Usuarios por Producto ID</b></h2>
+                <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+                    <p:outputLabel for="product" value="Insertar Producto (ID), ex B00004TWZ0: " />
+                    <p:inputText id="product" value="#{userByItem.producto}" required="true" requiredMessage="ERROR: Debe ingresar Id del producto a consultar"/>
+                </h:panelGrid>
+
+                <p:commandButton value="Informe" actionListener="#{userByItem.listar}" icon="ui-icon-check" />
+            </h:form>        
         </ui:define>
     </ui:composition>
 </html>

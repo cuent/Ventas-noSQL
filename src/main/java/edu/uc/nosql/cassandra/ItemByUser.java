@@ -5,11 +5,18 @@
  */
 package edu.uc.nosql.cassandra;
 
+import edu.uc.nosql.general.JsfUtil;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -17,21 +24,31 @@ import javax.faces.bean.SessionScoped;
  */
 @ManagedBean(name = "itemByUser")
 @SessionScoped
-public class ItemByUser {
+public class ItemByUser implements Serializable {
 
-    private List<String> items = new ArrayList<>();
-    private List<String> users = new ArrayList<>();
+    private List<ItemUser> datos = new ArrayList<>();
+    private ItemUser itemUser;
     private String usuario;
 
     @PostConstruct
     public void init() {
-        items.add("1");
-        items.add("2");
-        items.add("3");
 
-        users.add("Juan");
-        users.add("Carlos");
-        users.add("Pepe");
+    }
+
+    public List<ItemUser> getDatos() {
+        return datos;
+    }
+
+    public void setDatos(List<ItemUser> datos) {
+        this.datos = datos;
+    }
+
+    public ItemUser getItemUser() {
+        return itemUser;
+    }
+
+    public void setItemUser(ItemUser itemUser) {
+        this.itemUser = itemUser;
     }
 
     public String getUsuario() {
@@ -42,23 +59,44 @@ public class ItemByUser {
         this.usuario = usuario;
     }
 
-    public List<String> getItems() {
-        return items;
-    }
+    public void regresarPagina() {
+        String toUrl = "/cassandra/product_by_user.xhtml";
+        FacesContext ctx = FacesContext.getCurrentInstance();
 
-    public void setItems(List<String> items) {
-        this.items = items;
-    }
+        ExternalContext extContext = ctx.getExternalContext();
+        String url = extContext.encodeActionURL(ctx.getApplication().
+                getViewHandler().getActionURL(ctx, toUrl));
 
-    public List<String> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<String> users) {
-        this.users = users;
+        try {
+            extContext.redirect(url);
+        } catch (IOException ex) {
+            Logger.getLogger(ItemByUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void listar() {
         System.out.println("Listar..." + usuario);
+
+        ItemUserFacade itemUserFacade = new ItemUserFacade();
+        setDatos(itemUserFacade.queryGetItemByUser(this.getUsuario()));
+        //itemUserFacade.close();
+
+        if (getDatos().isEmpty()) {
+            String mensaje = "Al usuario " + usuario + " le gusta 0 productos";
+            JsfUtil.addErrorMessage(mensaje);
+        } else {
+            String toUrl = "/cassandra/list_product_by_user.xhtml";
+            FacesContext ctx = FacesContext.getCurrentInstance();
+
+            ExternalContext extContext = ctx.getExternalContext();
+            String url = extContext.encodeActionURL(ctx.getApplication().
+                    getViewHandler().getActionURL(ctx, toUrl));
+
+            try {
+                extContext.redirect(url);
+            } catch (IOException ex) {
+                Logger.getLogger(ItemByUser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }
