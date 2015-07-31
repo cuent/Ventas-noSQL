@@ -69,6 +69,12 @@ public class ItemUserFacade {
         return listItemUser;
     }
 
+    public boolean queryCustomer(String cutomer) {
+        String query = String.format("﻿SELECT DISTINCT cutomer FROM item_by_user  WHERE cutomer=%s;", cutomer);
+        ResultSet results = session.execute(query);
+        return results.all().size() > 0;
+    }
+
     public void loadUserByProduct(String asin, int cutomer, String name) {
         String query = String.format("INSERT INTO user_product.user_by_item (asin, cutomer, name) VALUES ('%s',%s,'%s');", asin, cutomer, name);
         session.execute(query);
