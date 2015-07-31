@@ -70,7 +70,7 @@ public class ItemUserFacade {
     }
 
     public boolean queryCustomer(String cutomer) {
-        String query = String.format("﻿SELECT DISTINCT cutomer FROM item_by_user  WHERE cutomer=%s;", cutomer);
+        String query = String.format("SELECT DISTINCT cutomer FROM user_product.item_by_user  WHERE cutomer=%s;", cutomer);
         ResultSet results = session.execute(query);
         return results.all().size() > 0;
     }
